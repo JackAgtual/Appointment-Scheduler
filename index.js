@@ -20,5 +20,9 @@ const password = process.env.PASSWORD
   await page.click('#loginButton')
   await page.waitForNavigation()
 
+  // get current appointment
+  const dateStr = await page.$eval('#timeSelected > strong > u', (el) => el.innerText)
+  const curAppointmentDate = new Date(dateStr)
+
   //   await browser.close()
 })()
