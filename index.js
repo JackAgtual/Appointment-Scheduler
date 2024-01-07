@@ -38,13 +38,28 @@ function dateHasChanged(previousFirstAppointmentDate) {
   await page.click('#rescheduleButton')
   await page.waitForSelector('#weekDiv > .calday')
 
-  const datesAndStatus = await page.$$eval('#weekDiv > .calday', (elements) => {
-    return elements.map((el) => el.innerText)
-  })
-  const firstAppointmentDateThisWeek = new Date(datesAndStatus[1].split('\n')[1])
+  let firstAppointmentDateThisWeek
+  let foundBetterAppointment = false
+  do {
+    const datesThisWeek = await page.$$eval('#weekDiv > .calday', (elements) => {
+      return elements.map((el) => el.innerText)
+    })
+    const appointmentDetails = datesThisWeek[1]
+    firstAppointmentDateThisWeek = new Date(appointmentDetails.split('\n')[1])
 
-  await page.click('#nextWeekButton > a')
-  await page.waitForFunction(dateHasChanged, {}, firstAppointmentDateThisWeek)
+    //check if new appointment is available
+    const appointmentAvailable = appointmentDetails.toLowerCase().includes('select time')
 
-  // await browser.close()
+    if (appointmentAvailable) {
+      foundBetterAppointment = true
+      break
+    }
+
+    await page.click('#nextWeekButton > a')
+    await page.waitForFunction(dateHasChanged, {}, firstAppointmentDateThisWeek)
+  } while (firstAppointmentDateThisWeek.valueOf() < curAppointmentDate.valueOf())
+
+  if (!foundBetterAppointment) await browser.close()
+
+  await browser.close()
 })()
