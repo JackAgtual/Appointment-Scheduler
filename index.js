@@ -7,6 +7,17 @@ const orderNumber = process.env.ORDER_NUMBER
 const email = process.env.EMAIL
 const password = process.env.PASSWORD
 
+function dateHasChanged(previousFirstAppointmentDate) {
+  previousFirstAppointmentDate = new Date(previousFirstAppointmentDate) // needed even though previousFirstAppointmentDate is passed as a Date obj
+
+  const datesAndStatus = Array.from(document.querySelectorAll('#weekDiv > .calday')).map(
+    (el) => el.innerText,
+  )
+  const firstAppointmentDateThisWeek = new Date(datesAndStatus[1].split('\n')[1])
+
+  return previousFirstAppointmentDate.valueOf() !== firstAppointmentDateThisWeek.valueOf()
+}
+
 ;(async () => {
   const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
@@ -24,5 +35,16 @@ const password = process.env.PASSWORD
   const dateStr = await page.$eval('#timeSelected > strong > u', (el) => el.innerText)
   const curAppointmentDate = new Date(dateStr)
 
-  //   await browser.close()
+  await page.click('#rescheduleButton')
+  await page.waitForSelector('#weekDiv > .calday')
+
+  const datesAndStatus = await page.$$eval('#weekDiv > .calday', (elements) => {
+    return elements.map((el) => el.innerText)
+  })
+  const firstAppointmentDateThisWeek = new Date(datesAndStatus[1].split('\n')[1])
+
+  await page.click('#nextWeekButton > a')
+  await page.waitForFunction(dateHasChanged, {}, firstAppointmentDateThisWeek)
+
+  // await browser.close()
 })()
