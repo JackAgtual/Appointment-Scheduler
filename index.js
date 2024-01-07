@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer'
 import dotenv from 'dotenv'
+import { sendEmail } from './services/emailjs/emailjs.js'
 dotenv.config()
 
 const URL = 'https://sandiegoca.permitium.com/order_tracker'
@@ -47,7 +48,6 @@ function dateHasChanged(previousFirstAppointmentDate) {
     const appointmentDetails = datesThisWeek[1]
     firstAppointmentDateThisWeek = new Date(appointmentDetails.split('\n')[1])
 
-    //check if new appointment is available
     const appointmentAvailable = appointmentDetails.toLowerCase().includes('select time')
 
     if (appointmentAvailable) {
@@ -60,6 +60,12 @@ function dateHasChanged(previousFirstAppointmentDate) {
   } while (firstAppointmentDateThisWeek.valueOf() < curAppointmentDate.valueOf())
 
   if (!foundBetterAppointment) await browser.close()
+
+  sendEmail(
+    email,
+    curAppointmentDate.toDateString(),
+    firstAppointmentDateThisWeek.toDateString(),
+  )
 
   await browser.close()
 })()
