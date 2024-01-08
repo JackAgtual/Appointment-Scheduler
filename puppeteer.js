@@ -61,13 +61,13 @@ export async function findAppointment() {
     await page.waitForFunction(dateHasChanged, {}, firstAppointmentDateThisWeek)
   } while (firstAppointmentDateThisWeek.valueOf() < curAppointmentDate.valueOf())
 
-  if (!foundBetterAppointment) await browser.close()
-
-  sendEmail(
-    email,
-    curAppointmentDate.toDateString(),
-    firstAppointmentDateThisWeek.toDateString(),
-  )
+  if (foundBetterAppointment) {
+    sendEmail(
+      email,
+      curAppointmentDate.toDateString(),
+      firstAppointmentDateThisWeek.toDateString(),
+    )
+  }
 
   await browser.close()
 }
