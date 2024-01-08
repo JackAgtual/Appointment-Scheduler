@@ -20,6 +20,8 @@ function dateHasChanged(previousFirstAppointmentDate) {
 }
 
 export async function findAppointment() {
+  console.log(`Checking appointments. Current time: ${new Date()}`)
+
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
 
