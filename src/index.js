@@ -1,8 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
-import userRouter from './routes/user.js'
-import logsRouter from './routes/logs.js'
+import usersRouter from './routes/usersRoute.js'
+import logsRouter from './routes/logsRoute.js'
 
 dotenv.config()
 const app = express()
@@ -17,7 +17,7 @@ db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
 
-app.use('/user', userRouter)
+app.use('/users', usersRouter)
 app.use('/logs', logsRouter)
 
 app.get('/', (req, res) => {

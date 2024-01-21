@@ -1,12 +1,12 @@
-import { Logs } from '../models/logs.js'
+import { Log } from '../models/log.js'
 
 export class LogsService {
   static async getLogs(email) {
-    return Logs.find({ email })
+    return Log.find({ email })
   }
 
   static async create({ email, currentAppointment, bestAppointmentFound }) {
-    return Logs.create({
+    return Log.create({
       email,
       currentAppointment,
       bestAppointmentFound,
