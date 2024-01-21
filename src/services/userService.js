@@ -20,9 +20,15 @@ export class UserService {
     })
   }
 
-  static async validateCredentials({ email, plainTextPassword }) {
+  static async validateCredentials(req, res, next) {
+    const { email, password: plainTextPassword } = req.headers
+
     const { salt, hashedPassword } = await User.findOne({ email }, 'salt hashedPassword')
     const testHash = await bcrypt.hash(plainTextPassword, salt)
-    return testHash === hashedPassword
+    if (testHash === hashedPassword) {
+      next()
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' })
+    }
   }
 }

@@ -23,27 +23,4 @@ route.post('/create', async (req, res) => {
   }
 })
 
-route.get('/validate', async (req, res) => {
-  const { email, password: plainTextPassword } = req.body
-
-  try {
-    const userIsValid = await UserService.validateCredentials({
-      email,
-      plainTextPassword,
-    })
-    console.log({ userIsValid })
-    if (userIsValid) {
-      res.status(200).json({
-        validated: true,
-      })
-    } else {
-      res.status(401).json({
-        validated: false,
-      })
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
-
 export default route
