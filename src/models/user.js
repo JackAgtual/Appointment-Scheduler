@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+import { emailSchema } from './sharedSchema.js'
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, lowercase: true },
+  email: emailSchema,
   orderNumber: { type: String, required: true },
   hashedPassword: { type: String, required: true },
   salt: { type: String, required: false },
