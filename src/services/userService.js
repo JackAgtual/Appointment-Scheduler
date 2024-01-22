@@ -39,6 +39,7 @@ export class UserService {
 
   static async validateCredentials(req, res, next) {
     const { email, password: plainTextPassword } = req.body
+    console.log({ email, plainTextPassword })
 
     const { salt, hashedPassword } = await User.findOne({ email }, 'salt hashedPassword')
     const testHash = await bcrypt.hash(plainTextPassword, salt)

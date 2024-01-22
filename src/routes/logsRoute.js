@@ -7,7 +7,7 @@ const route = Router()
 route.use(UserService.validateCredentials)
 
 route.get('/', async (req, res) => {
-  const { email } = req.headers
+  const { email } = req.body
 
   try {
     const logs = await LogsService.getLogs(email)
