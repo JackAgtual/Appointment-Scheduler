@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   orderNumber: { type: String, required: true },
   hashedPassword: { type: String, required: true },
   salt: { type: String, required: false },
+  enrolled: { type: Boolean, required: true, default: true },
 })
 
 export const User = mongoose.model('User', userSchema)

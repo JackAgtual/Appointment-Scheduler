@@ -3,19 +3,15 @@ import { UserService } from '../services/userService.js'
 
 const route = Router()
 
-route.post('/create', async (req, res) => {
+route.post('/create', UserService.userDoesNotExist, async (req, res) => {
   const { email, orderNumber, password } = req.body
-
-  if (await UserService.userExists(email)) {
-    res.status(400).json({ message: `${email} already exists.` })
-    return
-  }
 
   try {
     const newUser = await UserService.create({
       email,
       orderNumber,
       plainTextPassword: password,
+      enrolled: true,
     })
     res.status(201).json(newUser)
   } catch (error) {

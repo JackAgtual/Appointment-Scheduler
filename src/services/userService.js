@@ -2,9 +2,26 @@ import bcrypt from 'bcrypt'
 import { User } from '../models/user.js'
 
 export class UserService {
-  static async userExists(email) {
-    const usersWithEmail = await User.find({ email })
-    return usersWithEmail.length > 0
+  static async userDoesNotExist(req, res, next) {
+    const { email } = req.body
+    const userExists = await User.exists({ email })
+
+    if (!userExists) {
+      next()
+    } else {
+      res.status(400).json({ message: `${email} already exists.` })
+    }
+  }
+
+  static async userDoesExist(req, res, next) {
+    const { email } = req.body
+    const userExits = await User.exists({ email })
+
+    if (userExits) {
+      next()
+    } else {
+      res.status(400).json({ message: `${email} does not exist` })
+    }
   }
 
   static async create({ email, orderNumber, plainTextPassword }) {
