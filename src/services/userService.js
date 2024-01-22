@@ -38,7 +38,7 @@ export class UserService {
   }
 
   static async validateCredentials(req, res, next) {
-    const { email, password: plainTextPassword } = req.headers
+    const { email, password: plainTextPassword } = req.body
 
     const { salt, hashedPassword } = await User.findOne({ email }, 'salt hashedPassword')
     const testHash = await bcrypt.hash(plainTextPassword, salt)
@@ -47,5 +47,12 @@ export class UserService {
     } else {
       res.status(401).json({ message: 'Invalid credentials' })
     }
+  }
+
+  static async patchEnrollment({ enrolled, email }) {
+    const user = await User.findOne({ email })
+    user.enrolled = enrolled
+    await user.save()
+    return user
   }
 }
