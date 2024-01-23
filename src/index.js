@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import usersRouter from './routes/usersRoute.js'
 import logsRouter from './routes/logsRoute.js'
+import appointmentsRouter from './routes/appointmentsRoute.js'
 
 dotenv.config()
 const app = express()
@@ -19,6 +20,7 @@ app.use(express.json())
 
 app.use('/users', usersRouter)
 app.use('/logs', logsRouter)
+app.use('/appointments', appointmentsRouter)
 
 app.get('/', (req, res) => {
   res.send('Connected to appointment scheduler API')

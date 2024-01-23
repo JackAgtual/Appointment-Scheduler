@@ -39,7 +39,6 @@ export class UserService {
 
   static async validateCredentials(req, res, next) {
     const { email, password: plainTextPassword } = req.body
-    console.log({ email, plainTextPassword })
 
     const { salt, hashedPassword } = await User.findOne({ email }, 'salt hashedPassword')
     const testHash = await bcrypt.hash(plainTextPassword, salt)
@@ -55,5 +54,20 @@ export class UserService {
     user.enrolled = enrolled
     await user.save()
     return user
+  }
+
+  static async getOrderNumber(email) {
+    const { orderNumber } = await User.findOne({ email }, 'orderNumber')
+    return orderNumber
+  }
+
+  static async userIsEnrolled(req, res, next) {
+    const { email } = req.body
+    const { enrolled } = await User.findOne({ email }, 'enrolled')
+    if (enrolled) {
+      next()
+    } else {
+      res.status(400).json({ message: `${email} is not enrolled` })
+    }
   }
 }
