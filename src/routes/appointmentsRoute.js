@@ -6,7 +6,7 @@ import { LogsService } from '../services/logsService.js'
 const route = Router()
 
 route.get(
-  '/',
+  '/user',
   [
     UserService.userDoesExist,
     UserService.validateCredentials,
