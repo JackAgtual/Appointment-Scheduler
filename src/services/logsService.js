@@ -6,11 +6,10 @@ export class LogsService {
   }
 
   static async create({ email, currentAppointment, bestAppointmentFound }) {
-    return Log.create({
-      email,
-      currentAppointment,
-      bestAppointmentFound,
-      date: Date.now(),
-    })
+    const data = { email, currentAppointment, date: Date.now() }
+    if (bestAppointmentFound !== null) {
+      data.bestAppointmentFound = bestAppointmentFound
+    }
+    return Log.create(data)
   }
 }

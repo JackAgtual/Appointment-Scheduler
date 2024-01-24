@@ -64,6 +64,10 @@ export class AppointmentService {
 
     await browser.close()
 
-    return foundBetterAppointment ? firstAppointmentDateThisWeek : null
+    const bestAppointment = foundBetterAppointment ? firstAppointmentDateThisWeek : null
+    return {
+      bestAppointment,
+      currentAppointment: curAppointmentDate,
+    }
   }
 }
