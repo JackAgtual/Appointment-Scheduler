@@ -4,8 +4,8 @@ import { emailSchema } from './sharedSchema.js'
 const userSchema = new mongoose.Schema({
   email: emailSchema,
   orderNumber: { type: String, required: true },
-  hashedPassword: { type: String, required: true },
-  salt: { type: String, required: false },
+  encryptedPassword: { type: String, required: true },
+  iv: { type: String, required: true },
   enrolled: { type: Boolean, required: true, default: true },
 })
 

@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt'
 import { User } from '../models/user.js'
+import { CryptoService } from './cryptoService.js'
 
 export class UserService {
   static async userDoesNotExist(req, res, next) {
@@ -25,24 +25,25 @@ export class UserService {
   }
 
   static async create({ email, orderNumber, plainTextPassword }) {
-    const saltRounds = 10
-    const salt = await bcrypt.genSalt(saltRounds)
-    const hash = await bcrypt.hash(plainTextPassword, salt)
+    const { encrypted: encryptedPassword, iv } = CryptoService.encrypt(plainTextPassword)
 
     return User.create({
       email,
       orderNumber,
-      hashedPassword: hash,
-      salt,
+      encryptedPassword,
+      iv,
     })
   }
 
   static async validateCredentials(req, res, next) {
-    const { email, password: plainTextPassword } = req.body
+    const { email, password } = req.body
 
-    const { salt, hashedPassword } = await User.findOne({ email }, 'salt hashedPassword')
-    const testHash = await bcrypt.hash(plainTextPassword, salt)
-    if (testHash === hashedPassword) {
+    const { encryptedPassword, iv } = await User.findOne(
+      { email },
+      'encryptedPassword iv',
+    )
+    const actualPassword = CryptoService.decrypt(encryptedPassword, iv)
+    if (password === actualPassword) {
       next()
     } else {
       res.status(401).json({ message: 'Invalid credentials' })
