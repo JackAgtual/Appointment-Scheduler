@@ -37,20 +37,7 @@ route.get(
 
 route.get('/all-users', async (req, res) => {
   try {
-    const enrolledUsers = await UserService.getAllEnrolledUsers()
-    const credentials = enrolledUsers.map((user) => {
-      const { encryptedPassword, iv, email, orderNumber } = user
-      const password = CryptoService.decrypt(encryptedPassword, iv)
-      return {
-        orderNumber,
-        email,
-        password,
-      }
-    })
-    for (const credential of credentials) {
-      console.log(`looking for ${credential.email}`)
-      await AppointmentService.findAppointmentAndLog(credential)
-    }
+    await AppointmentService.findAppointmentsAndLogAllUsers()
     res.send()
   } catch (error) {
     res.status(500).json({ message: error.message })

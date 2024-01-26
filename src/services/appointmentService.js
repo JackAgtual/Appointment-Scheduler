@@ -1,6 +1,8 @@
 import puppeteer from 'puppeteer'
 import { LogsService } from './logsService.js'
 import { EmailService } from './emailService.js'
+import { CryptoService } from './cryptoService.js'
+import { UserService } from './userService.js'
 
 const URL = 'https://sandiegoca.permitium.com/order_tracker'
 
@@ -92,5 +94,22 @@ export class AppointmentService {
       bestAppointmentFound: bestAppointment,
     })
     return { bestAppointment, currentAppointment }
+  }
+
+  static async findAppointmentsAndLogAllUsers() {
+    const enrolledUsers = await UserService.getAllEnrolledUsers()
+    const credentials = enrolledUsers.map((user) => {
+      const { encryptedPassword, iv, email, orderNumber } = user
+      const password = CryptoService.decrypt(encryptedPassword, iv)
+      return {
+        orderNumber,
+        email,
+        password,
+      }
+    })
+
+    for (const credential of credentials) {
+      await AppointmentService.findAppointmentAndLog(credential)
+    }
   }
 }
