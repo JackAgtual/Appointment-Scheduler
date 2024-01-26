@@ -19,6 +19,10 @@ route.post('/create', UserService.userDoesNotExist, async (req, res) => {
   }
 })
 
+route.get('/validate', UserService.validateCredentials, async (req, res) => {
+  res.sendStatus(200)
+})
+
 route.patch(
   '/enrollment',
   [UserService.userDoesExist, UserService.validateCredentials],
