@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer'
 import { LogsService } from './logsService.js'
+import { EmailService } from './emailService.js'
 
 const URL = 'https://sandiegoca.permitium.com/order_tracker'
 
@@ -66,6 +67,15 @@ export class AppointmentService {
     await browser.close()
 
     const bestAppointment = foundBetterAppointment ? firstAppointmentDateThisWeek : null
+
+    if (bestAppointment !== null) {
+      await EmailService.send({
+        recipient: email,
+        currentDate: curAppointmentDate,
+        betterDate: bestAppointment,
+      })
+    }
+
     return {
       bestAppointment,
       currentAppointment: curAppointmentDate,
