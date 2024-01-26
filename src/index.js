@@ -10,10 +10,14 @@ const app = express()
 const PORT = process.env.PORT || 8000
 const DATABASE_URL = process.env.DATABASE_URL
 
+console.log(`Trying to connect to ${DATABASE_URL}`)
 mongoose.connect(DATABASE_URL)
 
 const db = mongoose.connection
-db.on('error', (error) => console.error(error))
+db.on('error', (error) => {
+  console.log('MongoDB error:')
+  console.error(error)
+})
 db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
