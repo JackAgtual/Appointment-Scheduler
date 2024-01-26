@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer'
+import { LogsService } from './logsService.js'
 
 const URL = 'https://sandiegoca.permitium.com/order_tracker'
 
@@ -69,5 +70,17 @@ export class AppointmentService {
       bestAppointment,
       currentAppointment: curAppointmentDate,
     }
+  }
+
+  static async findAppointmentAndLog({ orderNumber, email, password }) {
+    const { bestAppointment, currentAppointment } =
+      await AppointmentService.findAppointment({ orderNumber, email, password })
+
+    LogsService.create({
+      email,
+      currentAppointment,
+      bestAppointmentFound: bestAppointment,
+    })
+    return { bestAppointment, currentAppointment }
   }
 }

@@ -71,4 +71,13 @@ export class UserService {
       res.status(400).json({ message: `${email} is not enrolled` })
     }
   }
+
+  static async getAllEnrolledUsers() {
+    return User.find({ enrolled: true })
+  }
+
+  static async getPassword(user) {
+    const { encryptedPassword, iv } = user
+    return CryptoService.decrypt(encryptedPassword, iv)
+  }
 }
