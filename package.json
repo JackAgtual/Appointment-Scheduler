@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "devStart": "nodemon ./src/index.js",
-    "start": "node ./src/index.js"
+    "start": "node ./node_modules/puppeteer/install.js && node ./src/index.js"
   },
   "keywords": [],
   "author": "",
