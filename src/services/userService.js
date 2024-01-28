@@ -2,8 +2,13 @@ import { User } from '../models/user.js'
 import { CryptoService } from './cryptoService.js'
 
 export class UserService {
+  static #getCredentialsFromRequest(req) {
+    const { email, password } = req.method === 'GET' ? req.query : req.body
+    return { email, password }
+  }
+
   static async userDoesNotExist(req, res, next) {
-    const { email } = req.body
+    const { email } = UserService.#getCredentialsFromRequest(req)
     const userExists = await User.exists({ email })
 
     if (!userExists) {
@@ -14,7 +19,7 @@ export class UserService {
   }
 
   static async userDoesExist(req, res, next) {
-    const { email } = req.body
+    const { email } = UserService.#getCredentialsFromRequest(req)
     const userExits = await User.exists({ email })
 
     if (userExits) {
@@ -36,8 +41,7 @@ export class UserService {
   }
 
   static async validateCredentials(req, res, next) {
-    const { email, password } = req.body
-
+    const { email, password } = UserService.#getCredentialsFromRequest(req)
     const { encryptedPassword, iv } = await User.findOne(
       { email },
       'encryptedPassword iv',
@@ -46,7 +50,7 @@ export class UserService {
     if (password === actualPassword) {
       next()
     } else {
-      res.status(401).json({ message: 'Invalid credentials' })
+      res.status(403).json({ message: 'Invalid credentials' })
     }
   }
 
