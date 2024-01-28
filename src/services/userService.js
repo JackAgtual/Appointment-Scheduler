@@ -14,7 +14,7 @@ export class UserService {
     if (!userExists) {
       next()
     } else {
-      res.status(400).json({ message: `${email} already exists.` })
+      res.status(400).json({ message: `${email} already exists.`, invalidInput: 'email' })
     }
   }
 
@@ -25,7 +25,7 @@ export class UserService {
     if (userExits) {
       next()
     } else {
-      res.status(400).json({ message: `${email} does not exist` })
+      res.status(400).json({ message: `${email} does not exist`, invalidInput: 'email' })
     }
   }
 
@@ -50,7 +50,7 @@ export class UserService {
     if (password === actualPassword) {
       next()
     } else {
-      res.status(403).json({ message: 'Invalid credentials' })
+      res.status(403).json({ message: 'Incorrect password', invalidInput: 'password' })
     }
   }
 
