@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import usersRouter from './routes/usersRoute.js'
@@ -21,6 +22,7 @@ db.on('error', (error) => {
 db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
+app.use(cors())
 
 app.use('/users', usersRouter)
 app.use('/logs', logsRouter)
