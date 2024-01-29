@@ -1,8 +1,6 @@
 import { Router } from 'express'
 import { AppointmentService } from '../services/appointmentService.js'
 import { UserService } from '../services/userService.js'
-import { LogsService } from '../services/logsService.js'
-import { CryptoService } from '../services/cryptoService.js'
 
 const route = Router()
 
@@ -14,7 +12,7 @@ route.get(
     UserService.userIsEnrolled,
   ],
   async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.query
     const orderNumber = await UserService.getOrderNumber(email)
 
     try {

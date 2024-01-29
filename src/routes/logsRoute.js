@@ -8,7 +8,7 @@ route.use(UserService.userDoesExist)
 route.use(UserService.validateCredentials)
 
 route.get('/', async (req, res) => {
-  const { email } = req.body
+  const { email } = req.query
 
   try {
     const logs = await LogsService.getLogs(email)
