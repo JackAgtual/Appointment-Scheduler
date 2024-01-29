@@ -35,7 +35,7 @@ export class AppointmentService {
 
     // get current appointment
     const dateStr = await page.$eval('#timeSelected > strong > u', (el) => el.innerText)
-    const curAppointmentDate = new Date('1/1/26') //new Date(dateStr)
+    const curAppointmentDate = new Date(dateStr)
 
     await page.click('#rescheduleButton')
     await page.waitForSelector('#weekDiv > .calday')
