@@ -20,6 +20,32 @@ export class AppointmentService {
     )
   }
 
+  static async validateCredentials({ orderNumber, email, password }) {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+
+    await page.goto(URL)
+
+    // Login
+    await page.type('#orderid', orderNumber)
+    await page.type('#email', email)
+    await page.type('#password', password)
+    await page.click('#loginButton')
+    await page.waitForNavigation()
+
+    const errorMessageSelector =
+      'body > div.container.bg-body.shadow.rounded-bottom.mb-5.p-4 > div.content.gradientBoxesWithOuterShadows > div.row.mt-5 > div.col-md-8 > div'
+
+    const credentialsAreValid = (await page.$(errorMessageSelector)) === null
+
+    const errorMessage = credentialsAreValid
+      ? null
+      : await page.$eval(errorMessageSelector, (el) => el.innerText)
+
+    await browser.close()
+    return { credentialsAreValid, errorMessage }
+  }
+
   static async findAppointment({ orderNumber, email, password }) {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()

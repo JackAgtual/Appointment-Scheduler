@@ -1,5 +1,6 @@
 import { User } from '../models/user.js'
 import { CryptoService } from './cryptoService.js'
+import { AppointmentService } from './appointmentService.js'
 
 export class UserService {
   static #getCredentialsFromRequest(req) {
@@ -30,6 +31,18 @@ export class UserService {
   }
 
   static async create({ email, orderNumber, plainTextPassword }) {
+    const { credentialsAreValid, errorMessage } =
+      await AppointmentService.validateCredentials({
+        email,
+        orderNumber,
+        password: plainTextPassword,
+      })
+
+    if (!credentialsAreValid) {
+      console.log({ errorMessage })
+      throw new Error(errorMessage)
+    }
+
     const { encrypted: encryptedPassword, iv } = CryptoService.encrypt(plainTextPassword)
 
     return User.create({
