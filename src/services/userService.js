@@ -1,6 +1,7 @@
 import { User } from '../models/user.js'
 import { CryptoService } from './cryptoService.js'
 import { AppointmentService } from './appointmentService.js'
+import { hoursToMs } from '../utils/time.js'
 
 export class UserService {
   static #getCredentialsFromRequest(req) {
@@ -123,5 +124,11 @@ export class UserService {
       'notificationFrequency',
     )
     return notificationFrequency
+  }
+
+  static async patchNotificationFrequency({ email, notificationFrequency }) {
+    const user = await User.findOne({ email })
+    user.notificationFrequency = hoursToMs(notificationFrequency)
+    await user.save()
   }
 }

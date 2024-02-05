@@ -42,4 +42,22 @@ route.patch(
   },
 )
 
+route.patch(
+  '/notification-frequency',
+  [UserService.userDoesExist, UserService.validateCredentials],
+  async (req, res) => {
+    const { email, notificationFrequency } = req.body
+
+    try {
+      const user = await UserService.patchNotificationFrequency({
+        email,
+        notificationFrequency,
+      })
+      res.json(user)
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  },
+)
+
 export default route
