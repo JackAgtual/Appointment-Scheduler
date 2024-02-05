@@ -2,7 +2,6 @@ import puppeteer from 'puppeteer'
 import axios from 'axios'
 import { LogsService } from './logsService.js'
 import { EmailService } from './emailService.js'
-import { CryptoService } from './cryptoService.js'
 import { UserService } from './userService.js'
 
 const permitiumURL = 'https://sandiegoca.permitium.com/order_tracker'
@@ -76,20 +75,6 @@ export class AppointmentService {
     })
 
     return res.data
-
-    // if (bestAppointment !== null) {
-    //   await EmailService.send({
-    //     recipient: email,
-    //     currentDate: curAppointmentDate,
-    //     betterDate: bestAppointment,
-    //     orderNumber,
-    //   })
-    // }
-
-    // return {
-    //   bestAppointment,
-    //   currentAppointment: curAppointmentDate,
-    // }
   }
 
   static async findAppointmentAndLog(endDateValue) {
@@ -108,20 +93,42 @@ export class AppointmentService {
     return bestAppointmentFound
   }
 
-  //   static async findAppointmentsAndLogAllUsers() {
-  //     const enrolledUsers = await UserService.getAllEnrolledUsers()
-  //     const credentials = enrolledUsers.map((user) => {
-  //       const { encryptedPassword, iv, email, orderNumber } = user
-  //       const password = CryptoService.decrypt(encryptedPassword, iv)
-  //       return {
-  //         orderNumber,
-  //         email,
-  //         password,
-  //       }
-  //     })
+  static async findAppointmentsForAllUsers() {
+    const { appointmentDate: latestAppointmentDate } =
+      await UserService.getLatestAppointmentOfEnrolledUsers()
 
-  //     for (const credential of credentials) {
-  //       await AppointmentService.findAppointmentAndLog(credential)
-  //     }
-  //   }
+    const appointments = await AppointmentService.findAppointments(
+      latestAppointmentDate.valueOf(),
+    )
+
+    const enrolledUsers = await UserService.getAllEnrolledUsers()
+    // TODO: Update enrolled users query time here
+
+    if (appointments.length === 0) return
+
+    const bestAppointmentValue = appointments.shift()
+
+    for (const user of enrolledUsers) {
+      const { email, appointmentDate, orderNumber } = user
+
+      const userCurAppointment = appointmentDate.valueOf()
+      const betterAppointmentAvailable = bestAppointmentValue < userCurAppointment
+      if (!betterAppointmentAvailable) continue
+
+      const bestAppointmentDate = new Date(bestAppointmentValue)
+
+      LogsService.create({
+        email,
+        currentAppointment: appointmentDate,
+        bestAppointmentFound: bestAppointmentDate,
+      })
+
+      EmailService.send({
+        recipient: email,
+        currentDate: appointmentDate,
+        betterDate: bestAppointmentDate,
+        orderNumber,
+      })
+    }
+  }
 }
