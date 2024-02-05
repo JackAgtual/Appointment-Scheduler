@@ -35,8 +35,12 @@ route.get(
 
 route.get('/all-users', async (req, res) => {
   try {
-    await AppointmentService.findAppointmentsAndLogAllUsers()
-    res.send()
+    const availableAppointments = await AppointmentService.findAppointments(
+      new Date('8/5/24').valueOf(), // FIXME: hard coding to test
+    )
+    // await AppointmentService.findAppointmentsAndLogAllUsers()
+    console.log(availableAppointments)
+    res.json(availableAppointments)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
