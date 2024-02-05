@@ -60,4 +60,18 @@ route.patch(
   },
 )
 
+route.get(
+  '/last-query-time',
+  [UserService.userDoesExist, UserService.validateCredentials],
+  async (req, res) => {
+    const { email } = req.query
+    try {
+      const timeLastQuery = await UserService.getLastNotificationTime(email)
+      res.json({ time: timeLastQuery })
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  },
+)
+
 export default route

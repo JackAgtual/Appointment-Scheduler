@@ -131,4 +131,9 @@ export class UserService {
     user.notificationFrequency = hoursToMs(notificationFrequency)
     await user.save()
   }
+
+  static async getLastNotificationTime(email) {
+    const { timeLastQuery } = await User.findOne({ email }, 'timeLastQuery')
+    return timeLastQuery
+  }
 }
