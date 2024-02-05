@@ -45,11 +45,18 @@ export class UserService {
 
     const { encrypted: encryptedPassword, iv } = CryptoService.encrypt(plainTextPassword)
 
+    const appointmentDate = await AppointmentService.getCurrentAppointmentDate({
+      orderNumber,
+      email,
+      password: plainTextPassword,
+    })
+
     return User.create({
       email,
       orderNumber,
       encryptedPassword,
       iv,
+      appointmentDate,
     })
   }
 

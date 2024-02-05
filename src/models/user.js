@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   encryptedPassword: { type: String, required: true },
   iv: { type: String, required: true },
   enrolled: { type: Boolean, required: true, default: true },
+  appointmentDate: { type: Date, required: true },
 })
 
 export const User = mongoose.model('User', userSchema)

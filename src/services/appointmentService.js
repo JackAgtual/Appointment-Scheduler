@@ -47,6 +47,23 @@ export class AppointmentService {
     return { credentialsAreValid, errorMessage }
   }
 
+  static async getCurrentAppointmentDate({ orderNumber, email, password }) {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+
+    await page.goto(permitiumURL)
+
+    // Login
+    await page.type('#orderid', orderNumber)
+    await page.type('#email', email)
+    await page.type('#password', password)
+    await page.click('#loginButton')
+    await page.waitForNavigation()
+
+    const dateStr = await page.$eval('#timeSelected > strong > u', (el) => el.innerText)
+    return new Date(dateStr)
+  }
+
   static async findAppointments(endDateValue) {
     const appointmentApiBaseUrl = 'https://sandiegoca.permitium.com/ccw/appointments'
 
