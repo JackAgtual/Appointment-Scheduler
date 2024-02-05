@@ -111,4 +111,9 @@ export class UserService {
       .limit(1)
       .select('appointmentDate')
   }
+
+  static async updateQueryTime() {
+    const udpateTime = new Date()
+    User.updateQueryTime(udpateTime)
+  }
 }

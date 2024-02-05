@@ -102,7 +102,7 @@ export class AppointmentService {
     )
 
     const enrolledUsers = await UserService.getAllEnrolledUsers()
-    // TODO: Update enrolled users query time here
+    await UserService.updateQueryTime()
 
     if (appointments.length === 0) return
 
