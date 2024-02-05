@@ -104,4 +104,11 @@ export class UserService {
     const { encryptedPassword, iv } = user
     return CryptoService.decrypt(encryptedPassword, iv)
   }
+
+  static async getLatestAppointmentOfEnrolledUsers() {
+    return User.findOne({ enrolled: true })
+      .sort('-appointmentDate')
+      .limit(1)
+      .select('appointmentDate')
+  }
 }
