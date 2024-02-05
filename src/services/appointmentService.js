@@ -77,22 +77,6 @@ export class AppointmentService {
     return res.data
   }
 
-  static async findAppointmentAndLog(endDateValue) {
-    const appointments = await AppointmentService.findAppointments(endDateValue)
-
-    const bestAppointmentFound = appointments.length === 0 ? null : appointments[0]
-
-    // TODO: only log if you found a better appointment
-
-    LogsService.create({
-      email,
-      currentAppointment,
-      bestAppointmentFound,
-    })
-
-    return bestAppointmentFound
-  }
-
   static async findAppointmentsForAllUsers() {
     const { appointmentDate: latestAppointmentDate } =
       await UserService.getLatestAppointmentOfEnrolledUsers()
