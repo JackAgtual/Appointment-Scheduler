@@ -8,7 +8,12 @@ const PUBLIC_KEY = process.env.EMAIL_JS_USER_ID
 const PRIVATE_KEY = process.env.EMAIL_JS_PRIVATE_KEY
 
 export class EmailService {
-  static async send({ recipient, currentDate, betterDate, orderNumber }) {
+  static async send({
+    recipient,
+    currentAppointmentDate,
+    betterAppointmentDate,
+    orderNumber,
+  }) {
     const data = {
       service_id: SERVICE_ID,
       template_id: TEMPLATE_ID,
@@ -16,8 +21,8 @@ export class EmailService {
       accessToken: PRIVATE_KEY,
       template_params: {
         recipient_email: recipient,
-        current_date: currentDate.toDateString(),
-        better_date: betterDate.toDateString(),
+        current_date: currentAppointmentDate.toDateString(),
+        better_date: betterAppointmentDate.toDateString(),
         order_number: orderNumber,
       },
     }

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { emailSchema } from './sharedSchema.js'
+import { hoursToMs } from '../utils/time.js'
 
 const userSchema = new mongoose.Schema({
   email: emailSchema,
@@ -9,6 +10,7 @@ const userSchema = new mongoose.Schema({
   enrolled: { type: Boolean, required: true, default: true },
   appointmentDate: { type: Date, required: true },
   timeLastQuery: { type: Date, required: false, default: null },
+  notificationFrequency: { type: Number, default: hoursToMs(1) },
 })
 
 userSchema.statics.updateQueryTime = async function (time) {

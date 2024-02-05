@@ -116,4 +116,12 @@ export class UserService {
     const udpateTime = new Date()
     User.updateQueryTime(udpateTime)
   }
+
+  static async getNotificationFrequency(email) {
+    const { notificationFrequency } = await User.findOne(
+      { email },
+      'notificationFrequency',
+    )
+    return notificationFrequency
+  }
 }

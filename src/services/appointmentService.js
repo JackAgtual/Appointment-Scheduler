@@ -3,6 +3,7 @@ import axios from 'axios'
 import { LogsService } from './logsService.js'
 import { EmailService } from './emailService.js'
 import { UserService } from './userService.js'
+import { NotificationService } from './notificationService.js'
 
 const permitiumURL = 'https://sandiegoca.permitium.com/order_tracker'
 
@@ -107,10 +108,10 @@ export class AppointmentService {
         bestAppointmentFound: bestAppointmentDate,
       })
 
-      EmailService.send({
-        recipient: email,
-        currentDate: appointmentDate,
-        betterDate: bestAppointmentDate,
+      await NotificationService.notify({
+        email,
+        currentAppointmentDate: appointmentDate,
+        betterAppointmentDate: bestAppointmentDate,
         orderNumber,
       })
     }
